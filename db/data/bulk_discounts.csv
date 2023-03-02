@@ -1,0 +1,9 @@
+id,name,percentage_discount,threshold,merchant_id
+1,Discount 1,10,5,1
+2,Discount 2, 20, 5,1
+3,Discount 3,20,3,2
+4,Discount 4,10,5,2
+5,Discount 5,15,3,3
+6,Discount 6,20,5,4
+7,Discount 7,10,3,4
+8,Discount 8,20,5,5
