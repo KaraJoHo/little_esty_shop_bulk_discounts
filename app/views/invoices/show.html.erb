@@ -9,6 +9,11 @@
   </nav>
 </div>
 
+ <div class = "revenue_and_discount">
+  <p>Total Revenue(without discount): <%=number_to_currency(@merchant.total_revenue_without_discounts(@invoice))%></p>
+  <p>Total Revenue(with discount): <%=number_to_currency(@merchant.total_discounted_revenue(@invoice))%></p>
+</div>
+
 <body>
   <div class="row">
     <p class='col-12'>Invoice #<%= @invoice.id %></p>
@@ -54,5 +59,7 @@
       <% end %>
     </tbody>
   </table>
+
+ 
 
 </body>

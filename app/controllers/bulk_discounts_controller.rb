@@ -33,13 +33,16 @@ class BulkDiscountsController < ApplicationController
     @merchant = Merchant.find(params[:merchant_id]) 
     @discount = BulkDiscount.find(params[:id])
     
-    @discount.update!(bulk_discount_params)
     if @discount.update(bulk_discount_params)
       redirect_to merchant_bulk_discount_path(@merchant, @discount)
     else 
       flash[:notice] = @discount.errors.full_messages
-      # render :edit, status: :unprocessable_entity
       redirect_to edit_merchant_bulk_discount_path(@merchant, @discount)
+
+      # flash.now[:notice] = @discount.errors.full_messages
+      # render :edit
+      # expected: "/merchant/5840/bulk_discounts/2431/edit"
+      # got: "/merchant/5840/bulk_discounts/2431"
     end
 
   end

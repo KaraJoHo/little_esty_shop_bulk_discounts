@@ -68,15 +68,17 @@ RSpec.describe 'merchant bulk discounts show page' do
       expect(page).to have_content("Awesome Discount")
     end
 
-    xit 'will display a flash message if the fields are not filled in correctly' do 
+    it 'will display a flash message if the fields are not filled in correctly' do 
       within(".edit_discount") do 
         fill_in('Name', with: " ")
         fill_in('Percentage Discount', with: 10)
         fill_in('Threshold', with: 5)
       
         click_button("Update Bulk discount")
-        expect(page).to have_content("Name can't be blank")
+        
       end 
+      expect(current_path).to eq(edit_merchant_bulk_discount_path(@merchant1, @discount1))
+      expect(page).to have_content("Name can't be blank")
     end
   end
 end
