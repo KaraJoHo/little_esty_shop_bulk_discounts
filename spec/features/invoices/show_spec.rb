@@ -100,4 +100,14 @@ RSpec.describe 'invoices show' do
      end
   end
 
+  describe 'user_story_6' do 
+    it 'has the total revenue for the merchant from this invoice(no discounts applied)' do 
+
+    end
+
+    it 'has the total revenue from invoice with discounts applied' do 
+      
+    end
+  end
+
 end
