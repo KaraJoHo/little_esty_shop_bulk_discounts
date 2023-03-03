@@ -95,6 +95,8 @@ describe Merchant do
       @merchant1 = Merchant.create!(name: 'Hair Care')
       @merchant2 = Merchant.create!(name: 'Jewelry')
 
+      @discount1 = @merchant1.bulk_discounts.create!(name: "Discount 1", percentage_discount: 10, threshold: 5)
+
       @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
       @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
       @item_3 = Item.create!(name: "Brush", description: "This takes out tangles", unit_price: 5, merchant_id: @merchant1.id)
@@ -158,6 +160,16 @@ describe Merchant do
 
     it "best_day" do
       expect(@merchant1.best_day).to eq(@invoice_8.created_at.to_date)
+    end
+
+    describe 'user_story_6' do 
+      it 'is the total revenue for the merchant without discounts applied' do 
+        expect(@merchant1.total_revenue_without_discounts(@invoice_1)).to eq(90)
+      end
+
+      it 'is the total discounted revenue' do 
+        expect(@merchant1.total_discounted_revenue(@invoice_1)).to eq(81)
+      end
     end
   end
 end
