@@ -45,31 +45,38 @@ RSpec.describe 'merchant bulk discounts show page' do
     @transaction6 = Transaction.create!(credit_card_number: 879799, result: 1, invoice_id: @invoice_7.id)
     @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_2.id)
 
-    visit merchant_bulk_discount_path(@merchant1, @discount1)
-  end
-
-  describe 'user_story_4' do 
-    it 'has the discount attributes(quantity threshold and percentage)' do 
-      within(".discount_info") do 
-        expect(page).to have_content("Name: Discount 1")
-        expect(page).to have_content("Percentage Discount: 20%")
-        expect(page).to have_content("Threshold: 5")
-        expect(page).to_not have_content(@discount2.name)
-        expect(page).to_not have_content(@discount2.threshold)
-        expect(page).to_not have_content(@discount3.name)
-        expect(page).to_not have_content(@discount3.percentage_discount)
-      end
-    end
+    visit edit_merchant_bulk_discount_path(@merchant1, @discount1)
   end
 
   describe 'user_story_5' do 
-    it 'has a link to edit the discount' do 
-      expect(page).to have_link("Edit Discount")
+    it 'has a pre-populated form' do 
+      within(".edit_discount") do 
+        expect(find_field('Name').value).to eq("Discount 1")
+        expect(find_field('Percentage Discount').value).to eq("20")
+        expect(find_field('Threshold').value).to eq("5")
+      end
     end
 
-    it 'navigates to a new page to edit after clicking the link' do 
-      click_link("Edit Discount")
-      expect(current_path).to eq(edit_merchant_bulk_discount_path(@merchant1, @discount1))
+    it 'can change any information and click submit, and redirect to the show page' do 
+      within(".edit_discount") do 
+        fill_in('Name', with: "Awesome Discount")
+        fill_in('Percentage Discount', with: 50)
+        fill_in('Threshold', with: 5)
+        click_button("Update Bulk discount")
+      end
+      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @discount1))
+      expect(page).to have_content("Awesome Discount")
+    end
+
+    xit 'will display a flash message if the fields are not filled in correctly' do 
+      within(".edit_discount") do 
+        fill_in('Name', with: " ")
+        fill_in('Percentage Discount', with: 10)
+        fill_in('Threshold', with: 5)
+      
+        click_button("Update Bulk discount")
+        expect(page).to have_content("Name can't be blank")
+      end 
     end
   end
 end
