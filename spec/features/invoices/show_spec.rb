@@ -5,6 +5,8 @@ RSpec.describe 'invoices show' do
     @merchant1 = Merchant.create!(name: 'Hair Care')
     @merchant2 = Merchant.create!(name: 'Jewelry')
 
+    @discount1 = @merchant1.bulk_discounts.create!(name: "Discount 1", percentage_discount: 10, threshold: 5)
+
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
     @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
     @item_3 = Item.create!(name: "Brush", description: "This takes out tangles", unit_price: 5, merchant_id: @merchant1.id)
@@ -102,11 +104,19 @@ RSpec.describe 'invoices show' do
 
   describe 'user_story_6' do 
     it 'has the total revenue for the merchant from this invoice(no discounts applied)' do 
+      visit merchant_invoice_path(@merchant1, @invoice_1)
 
+      within(".revenue_and_discount") do
+        expect(page).to have_content("Total Revenue(without discount): $162.00")
+      end
     end
 
     it 'has the total revenue from invoice with discounts applied' do 
+      visit merchant_invoice_path(@merchant1, @invoice_1) 
       
+      within(".revenue_and_discount") do
+        expect(page).to have_content("Total Revenue(with discount): $145.80")
+      end
     end
   end
 
