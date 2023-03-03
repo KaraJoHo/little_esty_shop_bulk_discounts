@@ -6,6 +6,7 @@ RSpec.describe 'invoices show' do
     @merchant2 = Merchant.create!(name: 'Jewelry')
 
     @discount1 = @merchant1.bulk_discounts.create!(name: "Discount 1", percentage_discount: 10, threshold: 5)
+   
 
     @item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: @merchant1.id, status: 1)
     @item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 8, merchant_id: @merchant1.id)
@@ -116,6 +117,27 @@ RSpec.describe 'invoices show' do
       
       within(".revenue_and_discount") do
         expect(page).to have_content("Total Revenue(with discount): $145.80")
+      end
+    end
+  end
+
+  describe 'user_story_7' do 
+    it 'has a link to the discount that was applied/if it was applied' do 
+      @discount2 = @merchant1.bulk_discounts.create!(name: "Discount 2", percentage_discount: 20, threshold: 5)
+      
+      visit merchant_invoice_path(@merchant1, @invoice_1) 
+      within("#the-status-#{@ii_1.id}") do 
+        expect(page).to have_link("Discount Applied: #{@discount2.name}")
+        click_link
+      end
+      expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @discount2))
+    end
+
+    it 'has no discounts for an invoice item that had no discounts applied' do 
+      visit merchant_invoice_path(@merchant1, @invoice_2) 
+
+      within("#the-status-#{@ii_2.id}") do 
+        expect(page).to have_content("No Discounts Applied")
       end
     end
   end
