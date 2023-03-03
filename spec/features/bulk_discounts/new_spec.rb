@@ -45,50 +45,41 @@ RSpec.describe 'merchant bulk discounts index' do
     @transaction6 = Transaction.create!(credit_card_number: 879799, result: 1, invoice_id: @invoice_7.id)
     @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_2.id)
 
-    visit merchant_bulk_discounts_path(@merchant1)
+    visit new_merchant_bulk_discount_path(@merchant1)
   end
 
-  describe 'user_story_1' do 
-    it 'has all the merchants bulk discounts w/ percentage and threshold' do 
-      within(".bulk_discounts") do 
-        expect(page).to have_content("Discount 1")
-        expect(page).to have_content("Discount 2")
-        expect(page).to have_content(@discount1.threshold)
-        expect(page).to have_content(@discount2.threshold)
-        expect(page).to have_content(@discount1.percentage_discount)
-        expect(page).to have_content(@discount2.percentage_discount)
-        expect(page).to_not have_content(@discount3.name)
-        
-      end
-    end
-
-    it 'has a link for each discount to its show page' do 
-      within("#discount_#{@discount1.id}") do 
-        expect(page).to have_link("Discount 1")
-      end
-
-      within(".bulk_discounts") do 
-        expect(page).to have_link("Discount 1")
-        expect(page).to have_link("Discount 2")
-        expect(page).to_not have_link("Discount 3")
-      end
-    end
-
-    it 'can naviagate to the bulk discounts show page' do 
-      within("#discount_#{@discount1.id}") do 
-        click_link("Discount 1")
-      end
-      expect(current_path).to eq("/merchant/#{@merchant1.id}/bulk_discounts/#{@discount1.id}")
-    end
-  end
   describe 'user_story_2' do 
-    it 'has a link to create a new discount' do 
-      expect(page).to have_link("Create New Discount")
+  
+    it 'has a form to  add a new bulk discount' do 
+        # save_and_open_page
+      within(".new_discount_form") do 
+        # save_and_open_page
+        expect(page).to have_field("bulk_discount_name")
+        expect(page).to have_field("bulk_discount_percentage_discount")
+        expect(page).to have_field("bulk_discount_threshold")
+      end
     end
 
-    it 'after clicking the link, takes me to a new page to make a new bulk discount' do 
-      click_link("Create New Discount")
+    it 'redirects back to the bulk discounts index after filling form with valid data' do 
+      within(".new_discount_form") do 
+        fill_in("bulk_discount_name", with: "New Discount")
+        fill_in("bulk_discount_percentage_discount", with: 20)
+        fill_in("bulk_discount_threshold", with: 3)
+        click_button "Create Bulk discount"
+      end
+      expect(current_path).to eq(merchant_bulk_discounts_path(@merchant1))
+      expect(page).to have_content("New Discount")
+    end
+
+    it 'saves valid information' do 
+      within(".new_discount_form") do 
+        fill_in("bulk_discount_percentage_discount", with: 20)
+        fill_in("bulk_discount_threshold", with: 3)
+        click_button "Create Bulk discount"
+      end
+      
       expect(current_path).to eq(new_merchant_bulk_discount_path(@merchant1))
+      expect(page).to have_content("Name can't be blank")
     end
   end
 end
