@@ -61,4 +61,10 @@ RSpec.describe 'merchant bulk discounts index' do
       end
     end
   end
+
+  describe 'user_story_5' do 
+    it 'has a link to edit the discount' do 
+      expect(page).to have_link("Edit Discount")
+    end
+  end
 end
