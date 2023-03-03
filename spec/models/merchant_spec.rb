@@ -165,10 +165,12 @@ describe Merchant do
     describe 'user_story_6' do 
       it 'is the total revenue for the merchant without discounts applied' do 
         expect(@merchant1.total_revenue_without_discounts(@invoice_1)).to eq(90)
+        expect(@merchant1.total_revenue_without_discounts(@invoice_7)).to eq(6)
       end
 
       it 'is the total discounted revenue' do 
         expect(@merchant1.total_discounted_revenue(@invoice_1)).to eq(81)
+        expect(@merchant1.total_discounted_revenue(@invoice_7)).to eq(6)
       end
     end
   end
