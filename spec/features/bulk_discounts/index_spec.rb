@@ -91,4 +91,33 @@ RSpec.describe 'merchant bulk discounts index' do
       expect(current_path).to eq(new_merchant_bulk_discount_path(@merchant1))
     end
   end
+
+  describe 'user_story_3' do 
+    it 'has a link to delete next to each bulk discount' do 
+      within("#discount_#{@discount1.id}") do 
+        expect(page).to have_link("Delete")
+      end
+    end
+
+    it 'when clicked, it redirects to bulk discount index where the discount is not listed' do 
+      within(".bulk_discounts") do 
+        expect(page).to have_link("Discount 1")
+        expect(page).to have_link("Discount 2")
+        expect(page).to_not have_link("Discount 3")
+      end
+
+      within("#discount_#{@discount1.id}") do 
+        click_link("Delete #{@discount1.name}")
+      end
+      expect(current_path).to eq(merchant_bulk_discounts_path(@merchant1))
+      expect(BulkDiscount.exists?(@discount1.id)).to be(false)
+
+      within(".bulk_discounts") do 
+        expect(page).to have_link("Discount 2")
+        expect(page).to_not have_link("Discount 1")
+        expect(page).to_not have_link("Discount 3")
+      end
+      
+    end
+  end
 end
