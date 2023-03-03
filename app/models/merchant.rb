@@ -54,4 +54,16 @@ class Merchant < ApplicationRecord
             .order("revenue desc", "invoices.created_at desc")
             .first&.created_at&.to_date
   end
+
+  def total_revenue_without_discounts(invoice)
+    invoice_items.where(invoice_id: invoice.id).distinct.sum('invoice_items.unit_price*invoice_items.quantity')
+  end
+
+  def total_discounted_revenue(invoice)
+     invoice_items.joins(:bulk_discounts)
+     .where('invoice_items.quantity >= bulk_discounts.threshold')
+     .where(invoice_id: invoice.id)
+     .distinct
+     .sum('(invoice_items.unit_price * invoice_items.quantity) * (1 - bulk_discounts.percentage_discount*.01)')
+  end
 end
