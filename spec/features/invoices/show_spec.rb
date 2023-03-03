@@ -124,6 +124,7 @@ RSpec.describe 'invoices show' do
   describe 'user_story_7' do 
     it 'has a link to the discount that was applied/if it was applied' do 
       @discount2 = @merchant1.bulk_discounts.create!(name: "Discount 2", percentage_discount: 20, threshold: 5)
+      
       visit merchant_invoice_path(@merchant1, @invoice_1) 
       within("#the-status-#{@ii_1.id}") do 
         expect(page).to have_link("Discount Applied: #{@discount2.name}")
@@ -134,6 +135,7 @@ RSpec.describe 'invoices show' do
 
     it 'has no discounts for an invoice item that had no discounts applied' do 
       visit merchant_invoice_path(@merchant1, @invoice_2) 
+
       within("#the-status-#{@ii_2.id}") do 
         expect(page).to have_content("No Discounts Applied")
       end
