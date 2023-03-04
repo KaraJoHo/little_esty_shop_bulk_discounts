@@ -172,6 +172,34 @@ describe Merchant do
         expect(@merchant1.total_discounted_revenue(@invoice_1)).to eq(81)
         expect(@merchant1.total_discounted_revenue(@invoice_7)).to eq(6)
       end
+
+      it 'does not apply a discount if item doesnt exceed threshold' do 
+        @invoice_test = Invoice.create!(customer_id: @customer_1.id, status: 2)
+        @ii_test_1 = InvoiceItem.create!(invoice_id: @invoice_test.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 0, created_at: "2012-03-27 14:54:09")
+
+        expect(@merchant1.total_discounted_revenue(@invoice_test)).to eq(10)
+      end
+
+      it 'discounts the second item but not the first item(first item does not meet threshold)'do 
+        @invoice_test = Invoice.create!(customer_id: @customer_1.id, status: 2)
+        @ii_test_1 = InvoiceItem.create!(invoice_id: @invoice_test.id, item_id: @item_1.id, quantity: 1, unit_price: 10, status: 0, created_at: "2012-03-27 14:54:09")
+        @ii_test_2 = InvoiceItem.create!(invoice_id: @invoice_test.id, item_id: @item_1.id, quantity: 5, unit_price: 10, status: 0, created_at: "2012-03-27 14:54:09")
+
+        expect(@merchant1.total_discounted_revenue(@invoice_test)).to eq(55)
+      end
+
+      it 'with multiple discounts, the items meeting the threshold will get the discount it meets' do 
+        @discount1 = @merchant1.bulk_discounts.create!(name: "Discount 1", percentage_discount: 20, threshold: 10)
+        @invoice_test = Invoice.create!(customer_id: @customer_1.id, status: 2)
+
+        @ii_test_1 = InvoiceItem.create!(invoice_id: @invoice_test.id, item_id: @item_1.id, quantity: 10, unit_price: 10, status: 0, created_at: "2012-03-27 14:54:09")
+        #this item has a threshold of 10 and should get the max discount available, which is discount 2
+
+        @ii_test_2 = InvoiceItem.create!(invoice_id: @invoice_test.id, item_id: @item_1.id, quantity: 5, unit_price: 10, status: 0, created_at: "2012-03-27 14:54:09")
+        #this item meets the threshold of 5, which means it only qualifies for discount 1
+        
+        expect(@merchant1.total_discounted_revenue(@invoice_test)).to eq(125)
+      end
     end
   end
 end

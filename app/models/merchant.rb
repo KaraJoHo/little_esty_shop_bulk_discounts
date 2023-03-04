@@ -78,10 +78,10 @@ class Merchant < ApplicationRecord
                      .joins(:bulk_discounts)
                      .where(invoice_id: invoice.id)
                      .select("invoice_items.*, 
-                                    sum(CASE 
+                                    min(CASE 
                                     WHEN invoice_items.quantity >= bulk_discounts.threshold 
                                     THEN (invoice_items.unit_price * invoice_items.quantity) * (1 - bulk_discounts.percentage_discount*.01)
-                                    ELSE invoice_items.unit_price
+                                    ELSE invoice_items.unit_price * invoice_items.quantity
                                     END) as discounted")
                      .group('invoice_items.id')                  
     InvoiceItem.select(Arel.sql('sum(discounted.discounted)'))

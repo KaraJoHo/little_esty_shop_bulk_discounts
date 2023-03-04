@@ -47,6 +47,7 @@ RSpec.describe InvoiceItem, type: :model do
 
       @discount1 = @m1.bulk_discounts.create!(name: "Discount 1", percentage_discount: 10, threshold: 5)
       @discount2 = @m1.bulk_discounts.create!(name: "Discount 2", percentage_discount: 20, threshold: 5)
+      @discount3 = @m1.bulk_discounts.create!(name: "Discount 2", percentage_discount: 5, threshold: 2)
 
       @c1 = Customer.create!(first_name: 'Bilbo', last_name: 'Baggins')
       @c2 = Customer.create!(first_name: 'Frodo', last_name: 'Baggins')
@@ -72,6 +73,13 @@ RSpec.describe InvoiceItem, type: :model do
     end
     it 'applies the best discount' do
       expect(@ii_1.apply_discount).to eq(@discount2)
+    end
+
+    it 'applies the best discount to the invoice items that meet the threshold' do 
+      @ii_5 = InvoiceItem.create!(invoice_id: @i1.id, item_id: @item_2.id, quantity: 2, unit_price: 8, status: 0)
+      expect(@ii_1.apply_discount).to eq(@discount2)
+      expect(@ii_2.apply_discount).to eq(@discount2)
+      expect(@ii_5.apply_discount).to eq(@discount3)
     end
   end
 end
