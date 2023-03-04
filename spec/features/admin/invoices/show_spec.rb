@@ -4,6 +4,8 @@ describe 'Admin Invoices Index Page' do
   before :each do
     @m1 = Merchant.create!(name: 'Merchant 1')
 
+    @discount1 = @m1.bulk_discounts.create!(name: "Discount 1", percentage_discount: 10, threshold: 5)
+
     @c1 = Customer.create!(first_name: 'Yo', last_name: 'Yoz', address: '123 Heyyo', city: 'Whoville', state: 'CO', zip: 12345)
     @c2 = Customer.create!(first_name: 'Hey', last_name: 'Heyz')
 
@@ -55,7 +57,6 @@ describe 'Admin Invoices Index Page' do
 
   it 'should display the total revenue the invoice will generate' do
     expect(page).to have_content("Total Revenue: $#{@i1.total_revenue}")
-
     expect(page).to_not have_content(@i2.total_revenue)
   end
 
@@ -67,6 +68,13 @@ describe 'Admin Invoices Index Page' do
 
       expect(current_path).to eq(admin_invoice_path(@i1))
       expect(@i1.status).to eq('completed')
+    end
+  end
+
+  describe 'user_story_8' do 
+    it 'has total revenue from this invoice and the total rev discounted' do 
+      expect(page).to have_content("Total Revenue: $#{@i1.total_revenue}")
+      expect(page).to have_content("Total Revenue with Discount: $#{@i1.total_revenue_with_discount}")
     end
   end
 end
