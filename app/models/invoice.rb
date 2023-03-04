@@ -25,9 +25,9 @@ class Invoice < ApplicationRecord
             ELSE invoice_items.unit_price END) as discounted')
     .group('invoice_items.id')
 
-    InvoiceItem.select('sum(discounted.discounted)')
+    InvoiceItem.select(Arel.sql('sum(discounted.discounted)'))
                .from(gather_invoice_rev, :discounted)
-               .pluck('sum(discounted.discounted)')
+               .pluck(Arel.sql('sum(discounted.discounted)'))
                .first
 
   end
