@@ -22,7 +22,7 @@ class Invoice < ApplicationRecord
             min(CASE 
             WHEN invoice_items.quantity >= bulk_discounts.threshold 
             THEN (invoice_items.quantity*invoice_items.unit_price)*(1 - bulk_discounts.percentage_discount*.01)
-            ELSE invoice_items.unit_price END) as discounted')
+            ELSE invoice_items.unit_price * invoice_items.quantity END) as discounted')
     .group('invoice_items.id')
 
     InvoiceItem.select(Arel.sql('sum(discounted.discounted)'))
