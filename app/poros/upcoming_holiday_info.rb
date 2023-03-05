@@ -6,4 +6,5 @@ class UpcomingHolidayInfo
   def initialize
     @next_3_holidays = HolidaysSearch.new.holidays_information[0..2]
   end
+  
 end
