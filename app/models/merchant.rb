@@ -73,7 +73,6 @@ class Merchant < ApplicationRecord
       #                .sum('(invoice_items.unit_price * invoice_items.quantity)')
       # end
 
-
     gather_revenue = invoice_items
                      .joins(:bulk_discounts)
                      .where(invoice_id: invoice.id)
