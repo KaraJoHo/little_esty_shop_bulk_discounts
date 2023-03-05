@@ -116,8 +116,23 @@ RSpec.describe 'merchant bulk discounts index' do
         expect(page).to have_link("Discount 2")
         expect(page).to_not have_link("Discount 1")
         expect(page).to_not have_link("Discount 3")
+      end 
+    end
+  end
+
+  describe 'user_story_9' do 
+    it 'hs a section of upcoming holidays showing name and date for 3 upcoming holidays' do 
+      within(".upcoming_holidays") do 
+        expect(page).to have_content("Juneteenth")
+        expect(page).to have_content("Good Friday")
+        expect(page).to have_content("Memorial Day")
+        expect(page).to have_content("2023-04-07")
+        expect(page).to have_content("2023-05-29")
+        expect(page).to have_content("2023-06-19")
+        expect(page).to_not have_content("Christmas")
+        expect(page).to_not have_content("2023-12-25")
+
       end
-      
     end
   end
 end

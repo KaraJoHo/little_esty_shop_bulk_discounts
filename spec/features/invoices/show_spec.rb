@@ -137,7 +137,7 @@ RSpec.describe 'invoices show' do
       visit merchant_invoice_path(@merchant1, @invoice_2) 
 
       within("#the-status-#{@ii_2.id}") do 
-        expect(page).to have_content("No Discounts Applied")
+        expect(page).to_not have_content("Discounts Applied")
       end
     end
   end
