@@ -17,10 +17,10 @@ class InvoiceItem < ApplicationRecord
   end
 
   def apply_discount 
-    bulk_discounts.joins(:invoice_items) #return a bulk discount object, start w/bulk discount
-                   .where('invoice_items.id': self.id) #have to join invoice items table, otherwise error. specify invoice item with self.id
+    bulk_discounts.joins(:invoice_items) 
+                   .where('invoice_items.id': self.id) 
                    .where('invoice_items.quantity >= bulk_discounts.threshold')
-                   .order(percentage_discount: :desc) #get the best discount first, where item quantity meets the condition
+                   .order(percentage_discount: :desc) 
                    .first
   end
 end
